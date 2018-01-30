@@ -1,11 +1,11 @@
 function text2opml (wholeText,baseSpaceCount){
 "use strict";
 
-// baseSpaceCountが3なら、タブ1字は空白3つと同等に解釈されます。
+// if baseSpaceCount = 3,1 indent = 3 spaces = 1 Tab
 var space = " ";
 var bSCnt = parseInt(baseSpaceCount,10);
 if (bSCnt == NaN || bSCnt < 1){
-  bSCnt = 4;//指定されない時は自動で空白4
+  bSCnt = 4;// 4 spaces
   };
 for (i =1,l = bSCnt; i<l; i++){
   space += " ";
@@ -105,7 +105,7 @@ if (levary.length ==0){
 };
 
 
-// 階層情報の解釈と整形
+// 階層情報の解釈と整理
 var pre = levary[0][1];
 var scale = [];
 for ( var i = 1, l = levary.length ; i < l; i++ ) {
