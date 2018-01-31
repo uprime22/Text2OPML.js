@@ -19,7 +19,7 @@ var NLc =
   else if(str.indexOf("\r")>-1){return "\r";}
     })(txt);
 var lines=txt.split(NLc);
-// texts with level info
+// texts with depth level info
 var levary=[];
 
 var dt=new Date();
@@ -186,7 +186,7 @@ i < l ; i++){
   prelev = levary[i][1];
 };
   
-// opml テキストを得る。
+// get opml
 var result = (new XMLSerializer()).
 serializeToString(dom);
 // 少し見栄え良く
