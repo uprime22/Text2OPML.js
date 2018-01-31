@@ -1,6 +1,5 @@
 function text2opml (wholeText,baseSpaceCount){
 "use strict";
-
 // if baseSpaceCount = 3,1 indent = 3 spaces = 1 Tab
 var space = " ";
 var bSCnt = parseInt(baseSpaceCount,10);
@@ -10,10 +9,16 @@ if (bSCnt == NaN || bSCnt < 1){
 for (i =1,l = bSCnt; i<l; i++){
   space += " ";
   };
-  
+ 
 var txt = wholeText;
-// "\n" linux and iOS
-var lines=txt.split("\n");
+// "\n" NewLineCode on linux and iOS
+var NLc =
+(function (str){
+  if(str.indexOf("\r\n")>-1){return "\r\n";}
+  else if(str.indexOf("\n")>-1){return "\n";}
+  else if(str.indexOf("\r")>-1){return "\r";}
+    })(txt);
+var lines=txt.split(NLc);
 // texts with level info
 var levary=[];
 
@@ -32,15 +37,15 @@ var datestr=
   dateobj.date +" "+
   dateobj.hour +":"+
   dateobj.minute ;
-  
 var tags={
   "head": 
-    "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n<opml version=\"1.0\">\n<head>\n<title>"+ datestr +"</title>\n</head>\n<body>",
+    "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"+NLc+"<opml version=\"1.0\">"+NLc+"<head>"+NLc+"<title>"+ datestr +"</title>"+NLc+"</head>"+NLc+"<body>",
   "end": 
-    "\n</body>\n</opml>\n "
+    NLc+"</body>"+
+    NLc+"</opml>"+NLc
 };
 
-// エスケープ文字の置き換え関数
+// escape in text
 function xml_escape(str) {
   str = str.replace(/&/g,"&amp;");
   str = str.replace(/"/g,"&quot;");
@@ -51,14 +56,14 @@ function xml_escape(str) {
   return str;
 };
 
-// '#'の数でレベルを設定,無しなら0
+// Count '#'
 function baseset(txt) {
     var num = 
     Number(txt.match(/^\s*(#*)/)[1].length);
     return num;
 };
 
-// インデントのカウント
+// Count indent + base
 function count(indent,base) {
     var base = (Number(base) || 0)
     var spc= indent.replace(/\t/g,space); //タブを空白に
@@ -66,16 +71,15 @@ function count(indent,base) {
     var num = (spc.match(/\s/g) || []).length/len;
     return Math.floor(num + base);
 };
- 
-// 見出し未出現時の最低階層は0+1
+
+// depth number:  "# hoge" =1, "foo">= 0+1
+// 
 var base = 0;
 
-// インデントと本文を拾う正規表現
-
-// 本文からlist markを削る
+// RegularEx.
+// Cut list marks
 //var indtexp=/^(\s*)(?:[\+\-\*]\s)?(\S*.*)$/;
-
-// list markを削らない
+// Remain list marks
 var indtexp=/^(\s*)(\S*.*)$/;
 
 
@@ -84,12 +88,11 @@ for ( var i = 0, l = lines.length ; i < l; i++ ) {
   // indtexp.lastIndex=0;
   var ary = str.match(indtexp);
   if (baseset(str)==0 ){
-    // '#'の見出し無し時
-    //インデントの階層情報を格納。1が最小
+    // there is no '#'
+    // set depth number >=1
     ary[1] =
     count(ary[1],base+1);
-  }else{ // # 見出し有り
-    // 見出しの階層情報を格納。
+  }else{ // the line has '#'s
     base = baseset(str);
     ary[1] = base;
   };
@@ -99,13 +102,12 @@ for ( var i = 0, l = lines.length ; i < l; i++ ) {
   };
 };
 
-// 全文無し時の処理
+// for blank text
 if (levary.length ==0){
   levary = [["",1,""]];
 };
 
-
-// 階層情報の解釈と整理
+// Readjust depth numbers
 var pre = levary[0][1];
 var scale = [];
 for ( var i = 1, l = levary.length ; i < l; i++ ) {
@@ -188,7 +190,7 @@ i < l ; i++){
 var result = (new XMLSerializer()).
 serializeToString(dom);
 // 少し見栄え良く
-result = result.replace(/(<\/*outline)/mg,"\n$1");
+result = result.replace(/(<\/*outline)/mg,NLc+"$1");
 
 return result
 };
