@@ -1,1 +1,2 @@
-Tiny JS function that converts indented plain text and Markdown to OPML.
+Tiny JavaScript function that converts indented plain text to OPML.
+This function also read Markdown's '#' header.
