@@ -75,7 +75,7 @@ function count(indent,base) {
 // Remain list marks
 var indtexp=/^(\s*)(\S*.*)$/;
 
-// depth level number:  "# hoge" =1, "foo">= 0+1
+// depth level number:  "# hoge" =1, "foo"=> 0+1
 var base = 0;
 for ( var i = 0, l = lines.length ; i < l; i++ ) {
   var str=xml_escape(lines[i]);
@@ -83,7 +83,7 @@ for ( var i = 0, l = lines.length ; i < l; i++ ) {
   var ary = str.match(indtexp);
   if (baseset(str)==0 ){
     // there is no #head
-    // set depth level number >=1
+    // set depth level number =>1
     ary[1] =
     count(ary[1],base+1);
   }else{ // the line has '#'s
@@ -179,7 +179,7 @@ i < l ; i++){
 var result = (new XMLSerializer()).
 serializeToString(dom);
 // for look
-result = result.replace(/(<\/*outline)/mg,NLc+"$1");
+result = result.replace(/(<\/*outline[^>]*>)/mg,"$1"+NLc);
 
 return result
 };
