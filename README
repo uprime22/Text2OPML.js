@@ -1,2 +1,4 @@
-This is a JavaScript function that converts indented plain text to OPML.
-This function also interprets Markdown's '#' header.
+# text2opml.js
+
+This JavaScript function  converts indented plain text to OPML.
+This function also interprets Markdown's '#' headers.
